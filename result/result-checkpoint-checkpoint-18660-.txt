@@ -1,0 +1,9 @@
+epochs: 10, simcse-roberta-large
+              precision    recall  f1-score   support
+
+           0     0.9143    0.7667    0.8340      6250
+           1     0.7991    0.9282    0.8588      6250
+
+    accuracy                         0.8474     12500
+   macro avg     0.8567    0.8474    0.8464     12500
+weighted avg     0.8567    0.8474    0.8464     12500
