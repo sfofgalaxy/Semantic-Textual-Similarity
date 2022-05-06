@@ -53,4 +53,8 @@ checkpoint-29856/
 checkpoint-29856
 ./result/checkpoint-29856
 ./result/checkpoint-29856/
+./test_tencent.py
+./socres.npy
+test_tencent.py
+socres.npy
 
