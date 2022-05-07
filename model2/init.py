@@ -83,15 +83,29 @@ def test(test_dataset, trainer, model_name):
     # Make prediction
     raw_pred = trainer.predict(test_dataset)
     labels = raw_pred.label_ids[:]
-    preds = raw_pred.predictions[:].argmax(-1)
+    # preds = raw_pred.predictions[:].argmax(-1)
+    def mapping(x):
+        if x[1] > 0:
+            if x[0] < 0:
+                if x[1]/abs(x[0])>0.66:
+                    return 1
+                else:
+                    return 0
+            elif x[1]/(x[1]+x[0])>0.9:
+                return 1
+        return 0
+    preds = list(map(mapping, raw_pred.predictions[:]))
+    report = classification_report(labels, preds, digits=4)
+    print(report)
 
     cm = confusion_matrix(y_true=labels, y_pred=preds)
     disp = ConfusionMatrixDisplay(confusion_matrix=cm)
     disp.plot()
-    plt.savefig('./result/'+model_name.replace('/','-')+'.png')#保存图片
+    plt.savefig('./result/'+model_name.replace('/','-').replace('\\','-')+'.png')#保存图片
 
     report = classification_report(labels, preds, digits=4)
-    my_open = open('./result/'+model_name.replace('/','-')+'.txt', 'w')
+    print(report)
+    my_open = open('./result/'+model_name.replace('/','-').replace('\\','-')+'.txt', 'w')
     my_open.write(report)
     my_open.close()
 
