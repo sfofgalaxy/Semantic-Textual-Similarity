@@ -12,18 +12,14 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classifica
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
-# import argparse
+import argparse
 
-# parser = argparse.ArgumentParser("")
-# parser.add_argument("--seed", type=int, default=144)
-# parser.add_argument("--form", default="prefix")
-# parser.add_argument("--result_file", type=str, default="../results.txt")
-# parser.add_argument("--max_steps", default=5000, type=int)
-# parser.add_argument("--lr", type=float, default=1e-2)
-# parser.add_argument("--warmup_step_prompt", type=int, default=500)
-# parser.add_argument("--eval_every_steps", type=int, default=500)
-# args = parser.parse_args()
-FORM = "prefix"
+parser = argparse.ArgumentParser("")
+parser.add_argument("--form", default="prefix")
+parser.add_argument("--re", default='f', help="resume or not")
+args = parser.parse_args()
+FORM = args.form
+checkpoint_dir = FORM+'_prompt_best_model.pt'
 
 def load_data(filepath):
     df = pd.read_csv(filepath)
@@ -42,7 +38,10 @@ classes = [ # There are two classes in Sentiment Analysis, one for negative and 
     "negative",
     "positive"
 ]
-plm, tokenizer, model_config, WrapperClass = load_plm("bert", "bert-base-chinese")
+if args.re == 'f':
+    plm, tokenizer, model_config, WrapperClass = load_plm("bert", "hfl/chinese-roberta-wwm-ext")
+else :
+    plm, tokenizer, model_config, WrapperClass = load_plm("bert", checkpoint_dir)
 
 promptTemplate = {
     'suffix':ManualTemplate(
@@ -104,7 +103,6 @@ optimizer_grouped_parameters = [
 ]
 
 optimizer = AdamW(optimizer_grouped_parameters, lr=2e-5, weight_decay=0.01)
-checkpoint_dir = "./best_model.pt"
 acc = 0
 length = len(train_dataloader)
 
@@ -139,7 +137,6 @@ for epoch in range(10):
             cur_acc = sum([int(i==j) for i,j in zip(allpreds, alllabels)])/len(allpreds)
             if (cur_acc>acc):
                 acc = cur_acc
-                torch.save(prompt_model, checkpoint_dir)
                 torch.save(prompt_model,FORM+'_prompt_best_model.pt')
 
 
