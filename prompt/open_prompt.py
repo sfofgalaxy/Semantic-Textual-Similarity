@@ -140,6 +140,7 @@ for epoch in range(10):
             if (cur_acc>acc):
                 acc = cur_acc
                 torch.save(prompt_model, checkpoint_dir)
+                torch.save(prompt_model,FORM+'_prompt_best_model.pt')
 
 
 
