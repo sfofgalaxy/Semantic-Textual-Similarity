@@ -120,7 +120,7 @@ for epoch in range(10):
         tot_loss += loss.item()
         optimizer.step()
         optimizer.zero_grad()
-        if step %10000 == 1:
+        if step %1000 == 1:
             print("Epoch {}, step: {}/{}, average loss: {}".format(epoch, step, length, tot_loss/(step+1)), flush=True)
     
             # Evaluation
