@@ -88,7 +88,7 @@ validation_dataloader = PromptDataLoader(dataset=dataset["dev"], template=prompt
 
 # start training
 use_cuda = True
-if args.re == 'f':
+if args.re == 'f' and args.t == 'f':
     prompt_model = PromptForClassification(plm=plm,template=promptTemplate[FORM], verbalizer=promptVerbalizer, freeze_plm=False)
 else:
     prompt_model = torch.load(checkpoint_dir)
