@@ -1,6 +1,6 @@
 from openprompt.data_utils import InputExample
 from openprompt.plms import load_plm
-from openprompt.prompts import ManualTemplate
+from openprompt.prompts import ManualTemplate, MixedTemplate
 from openprompt import PromptForClassification
 from openprompt.prompts import ManualVerbalizer
 from openprompt import PromptDataLoader
@@ -49,11 +49,11 @@ promptTemplate = {
     'prefix':ManualTemplate(
         text = '下面两句话{"mask"}相似。{"placeholder":"text_a"}。{"placeholder":"text_b"}。',
         tokenizer = tokenizer),
-    'soft_prefix':ManualTemplate(
-        text = '{"soft"}{"mask"}。{"placeholder":"text_a"}。{"placeholder":"text_b"}。',
+    'soft_prefix':MixedTemplate(
+        text = '{"soft"}{"soft"}{"soft"}{"soft"}{"mask"}{"soft"}{"soft"}。{"placeholder":"text_a"}。{"placeholder":"text_b"}。',
         tokenizer = tokenizer),
-    'soft_suffix':ManualTemplate(
-        text = '{"placeholder":"text_a"}。{"placeholder":"text_b"}。{"soft"}{"mask"}。',
+    'soft_suffix':MixedTemplate(
+        text = '{"placeholder":"text_a"}。{"placeholder":"text_b"}。{"soft"}{"soft"}{"soft"}{"soft"}{"mask"}{"soft"}{"soft"}。',
         tokenizer = tokenizer)
 }
 
