@@ -17,6 +17,8 @@ import argparse
 parser = argparse.ArgumentParser("")
 parser.add_argument("--form", default="prefix")
 parser.add_argument("--re", default='f', help="resume or not")
+parser.add_argument("--t", default='f', help="test or not")
+
 args = parser.parse_args()
 FORM = args.form
 checkpoint_dir = FORM+'_prompt_best_model.pt'
@@ -38,10 +40,7 @@ classes = [ # There are two classes in Sentiment Analysis, one for negative and 
     "negative",
     "positive"
 ]
-if args.re == 'f':
-    plm, tokenizer, model_config, WrapperClass = load_plm("bert", "hfl/chinese-roberta-wwm-ext")
-else :
-    plm, tokenizer, model_config, WrapperClass = load_plm("bert", checkpoint_dir)
+plm, tokenizer, model_config, WrapperClass = load_plm("bert", "hfl/chinese-roberta-wwm-ext")
 
 promptTemplate = {
     'suffix':ManualTemplate(
@@ -89,7 +88,10 @@ validation_dataloader = PromptDataLoader(dataset=dataset["dev"], template=prompt
 
 # start training
 use_cuda = True
-prompt_model = PromptForClassification(plm=plm,template=promptTemplate[FORM], verbalizer=promptVerbalizer, freeze_plm=False)
+if args.re == 'f':
+    prompt_model = PromptForClassification(plm=plm,template=promptTemplate[FORM], verbalizer=promptVerbalizer, freeze_plm=False)
+else:
+    prompt_model = torch.load(checkpoint_dir)
 if use_cuda:
     prompt_model=  prompt_model.cuda()
 
@@ -106,38 +108,39 @@ optimizer = AdamW(optimizer_grouped_parameters, lr=2e-5, weight_decay=0.01)
 acc = 0
 length = len(train_dataloader)
 
-for epoch in range(10):
-    tot_loss = 0
-    for step, inputs in enumerate(train_dataloader):
-        if use_cuda:
-            inputs = inputs.cuda()
-        logits = prompt_model(inputs)
-        labels = inputs['label']
-        loss = loss_func(logits, labels)
-        loss.backward()
-        tot_loss += loss.item()
-        optimizer.step()
-        optimizer.zero_grad()
-        if step %1000 == 1:
-            print("Epoch {}, step: {}/{}, average loss: {}".format(epoch, step, length, tot_loss/(step+1)), flush=True)
-    
-            # Evaluation
-            allpreds = []
-            alllabels = []
-            for step, inputs in enumerate(validation_dataloader):
-                if use_cuda:
-                    inputs = inputs.cuda()
-                logits = prompt_model(inputs)
-                labels = inputs['label']
-                alllabels.extend(labels.cpu().tolist())
-                allpreds.extend(torch.argmax(logits, dim=-1).cpu().tolist())
-            report = classification_report(alllabels, allpreds, digits=4)
-            print(report)
+if args.t == 'f':
+    for epoch in range(10):
+        tot_loss = 0
+        for step, inputs in enumerate(train_dataloader):
+            if use_cuda:
+                inputs = inputs.cuda()
+            logits = prompt_model(inputs)
+            labels = inputs['label']
+            loss = loss_func(logits, labels)
+            loss.backward()
+            tot_loss += loss.item()
+            optimizer.step()
+            optimizer.zero_grad()
+            if step %1000 == 1:
+                print("Epoch {}, step: {}/{}, average loss: {}".format(epoch, step, length, tot_loss/(step+1)), flush=True)
+        
+                # Evaluation
+                allpreds = []
+                alllabels = []
+                for step, inputs in enumerate(validation_dataloader):
+                    if use_cuda:
+                        inputs = inputs.cuda()
+                    logits = prompt_model(inputs)
+                    labels = inputs['label']
+                    alllabels.extend(labels.cpu().tolist())
+                    allpreds.extend(torch.argmax(logits, dim=-1).cpu().tolist())
+                report = classification_report(alllabels, allpreds, digits=4)
+                print(report)
 
-            cur_acc = sum([int(i==j) for i,j in zip(allpreds, alllabels)])/len(allpreds)
-            if (cur_acc>acc):
-                acc = cur_acc
-                torch.save(prompt_model,FORM+'_prompt_best_model.pt')
+                cur_acc = sum([int(i==j) for i,j in zip(allpreds, alllabels)])/len(allpreds)
+                if (cur_acc>acc):
+                    acc = cur_acc
+                    torch.save(prompt_model,FORM+'_prompt_best_model.pt')
 
 
 
