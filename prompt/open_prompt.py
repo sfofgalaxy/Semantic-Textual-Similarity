@@ -50,13 +50,11 @@ promptTemplate = {
         text = '下面两句话{"mask"}相似。{"placeholder":"text_a"}。{"placeholder":"text_b"}。',
         tokenizer = tokenizer),
     'soft_prefix':MixedTemplate(
-        model=plm, tokenizer=tokenizer,
         text = '{"soft"}{"soft"}{"soft"}{"soft"}{"mask"}{"soft"}{"soft"}。{"placeholder":"text_a"}。{"placeholder":"text_b"}。',
-        tokenizer = tokenizer),
+        model=plm, tokenizer = tokenizer),
     'soft_suffix':MixedTemplate(
-        model=plm, tokenizer=tokenizer,
         text = '{"placeholder":"text_a"}。{"placeholder":"text_b"}。{"soft"}{"soft"}{"soft"}{"soft"}{"mask"}{"soft"}{"soft"}。',
-        tokenizer = tokenizer)
+        model=plm, tokenizer=tokenizer)
 }
 
 # tokenizer = BertTokenizer(vocab_file='./data/vocab.txt')
