@@ -158,6 +158,7 @@ for step, inputs in enumerate(test_dataloader):
     if use_cuda:
         inputs = inputs.cuda()
     logits = prompt_model(inputs)
+    print(logits)
     labels = inputs['label']
     alllabels.extend(labels.cpu().tolist())
     allpreds.extend(torch.argmax(logits, dim=-1).cpu().tolist())
