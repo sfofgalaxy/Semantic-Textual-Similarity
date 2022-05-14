@@ -50,10 +50,10 @@ promptTemplate = {
         text = '下面两句话{"mask"}相似。{"placeholder":"text_a"}。{"placeholder":"text_b"}。',
         tokenizer = tokenizer),
     'soft_prefix':ManualTemplate(
-        text = '{"soft"}{"soft"}{"soft"}{"soft"}{"mask"}{"soft"}{"soft"}。{"placeholder":"text_a"}。{"placeholder":"text_b"}。',
+        text = '{"soft"}{"soft"}{"mask"}{"soft"}{"soft"}。{"placeholder":"text_a"}。{"placeholder":"text_b"}。',
         tokenizer = tokenizer),
     'soft_suffix':ManualTemplate(
-        text = '{"placeholder":"text_a"}。{"placeholder":"text_b"}。{"soft"}{"soft"}{"soft"}{"soft"}{"mask"}{"soft"}{"soft"}。',
+        text = '{"placeholder":"text_a"}。{"placeholder":"text_b"}。{"soft"}{"soft"}{"mask"}{"soft"}{"soft"}。',
         tokenizer = tokenizer)
 }
 
