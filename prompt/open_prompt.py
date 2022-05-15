@@ -18,6 +18,7 @@ parser = argparse.ArgumentParser("")
 parser.add_argument("--form", default="prefix")
 parser.add_argument("--re", default='f', help="resume or not")
 parser.add_argument("--t", default='f', help="test or not")
+parser.add_argument("--ep", default='5', help="test or not")
 
 args = parser.parse_args()
 FORM = args.form
@@ -109,7 +110,7 @@ acc = 0
 length = len(train_dataloader)
 
 if args.t == 'f':
-    for epoch in range(10):
+    for epoch in range(int(args.ep)):
         tot_loss = 0
         for step, inputs in enumerate(train_dataloader):
             if use_cuda:

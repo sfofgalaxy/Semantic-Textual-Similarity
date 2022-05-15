@@ -31,9 +31,9 @@ python model2/init.py --ep 20 --type rb
 ```
 
 ## Prompt
-`prompt` folder contains the better model with [OpenPrompt](https://github.com/thunlp/OpenPrompt/) trainer version model, it get a better results with Prompt-tuning which is very popular currently, which is based on `huggingface` pre-trained models. and hyper-parameters. I trained it with different prompt templates. To train it with your own template, you need to change the source code and just run the command in the root path:
+`prompt` folder contains the better model with [OpenPrompt](https://github.com/thunlp/OpenPrompt/) trainer version model, it get a better results with Prompt-tuning which is very popular currently, which is based on `huggingface` pre-trained models. and hyper-parameters. I trained it with different prompt templates, based on `hfl/chinese-roberta-wwm-ext`. To train it with your own template, you need to change the source code and just run the command in the root path:
 ```.bash
 # run the command in the Semantic-Texual-Similarity with roberta model
-python prompt/open_prompt.py
+python prompt/open_prompt.py --form [option (soft_)prefix, (soft_)suffix] --ep 10 [epchos, defaut 5]
 ```
 
